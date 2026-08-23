@@ -34,29 +34,39 @@ def fetch_sleeper_nfl_players():
         return response.json()
     return {}
 
-# Master Player Pool structured with TFH Tiers and Metrics
+# 2026 Master Player Pool aligned with TFH Tiers and Metrics
 master_pool = [
+    # Tier 1 - Elite Ceilings & Target Monsters
     {"name": "Bijan Robinson", "pos": "RB", "tier": 1, "drb_score": 9.6, "archetype": "Elite Ceiling", "adp": 3},
     {"name": "Jahmyr Gibbs", "pos": "RB", "tier": 1, "drb_score": 9.4, "archetype": "Elite Ceiling", "adp": 4},
     {"name": "Christian McCaffrey", "pos": "RB", "tier": 1, "drb_score": 9.8, "archetype": "Elite Ceiling", "adp": 1},
-    {"name": "CeeDee Lamb", "pos": "WR", "tier": 1, "drb_score": 0.0, "archetype": "Target Monster", "adp": 2},
-    {"name": "Tyreek Hill", "pos": "WR", "tier": 1, "drb_score": 0.0, "archetype": "Target Monster", "adp": 5},
-    {"name": "Puka Nacua", "pos": "WR", "tier": 1, "drb_score": 0.0, "archetype": "Target Monster", "adp": 7},
-    {"name": "Ja'Marr Chase", "pos": "WR", "tier": 1, "drb_score": 0.0, "archetype": "Target Monster", "adp": 6},
+    {"name": "Puka Nacua", "pos": "WR", "tier": 1, "drb_score": 0.0, "archetype": "Target Monster", "adp": 2},
+    {"name": "Ja'Marr Chase", "pos": "WR", "tier": 1, "drb_score": 0.0, "archetype": "Target Monster", "adp": 3},
+    {"name": "Jaxon Smith-Njigba", "pos": "WR", "tier": 1, "drb_score": 0.0, "archetype": "Elite Production", "adp": 5},
+    {"name": "Amon-Ra St. Brown", "pos": "WR", "tier": 1, "drb_score": 0.0, "archetype": "Elite Consistency", "adp": 7},
+    
+    # Tier 2 - Safe Volume Floors & Foundation Pieces
+    {"name": "CeeDee Lamb", "pos": "WR", "tier": 2, "drb_score": 0.0, "archetype": "High-Upside Conversion", "adp": 10},
+    {"name": "Justin Jefferson", "pos": "WR", "tier": 2, "drb_score": 0.0, "archetype": "Elite Ceiling", "adp": 11},
     {"name": "Saquon Barkley", "pos": "RB", "tier": 2, "drb_score": 8.5, "archetype": "Safe Volume Floor", "adp": 12},
     {"name": "Jonathan Taylor", "pos": "RB", "tier": 2, "drb_score": 8.3, "archetype": "Safe Volume Floor", "adp": 15},
-    {"name": "Amon-Ra St. Brown", "pos": "WR", "tier": 2, "drb_score": 0.0, "archetype": "High-Upside Conversion", "adp": 10},
-    {"name": "Garrett Wilson", "pos": "WR", "tier": 2, "drb_score": 0.0, "archetype": "High-Upside Conversion", "adp": 14},
     {"name": "Drake London", "pos": "WR", "tier": 2, "drb_score": 0.0, "archetype": "High-Upside Conversion", "adp": 18},
+
+    # Tier 3 - High-Upside Conversions & Breakouts
+    {"name": "Malik Nabers", "pos": "WR", "tier": 3, "drb_score": 0.0, "archetype": "High-Upside Conversion", "adp": 20},
+    {"name": "Marvin Harrison Jr.", "pos": "WR", "tier": 3, "drb_score": 0.0, "archetype": "Rookie Upside", "adp": 22},
     {"name": "De'Von Achane", "pos": "RB", "tier": 3, "drb_score": 7.8, "archetype": "Explosive Ceiling", "adp": 25},
     {"name": "Josh Jacobs", "pos": "RB", "tier": 3, "drb_score": 7.5, "archetype": "Safe Volume Floor", "adp": 28},
     {"name": "Nico Collins", "pos": "WR", "tier": 3, "drb_score": 0.0, "archetype": "High-Upside Conversion", "adp": 30},
-    {"name": "Marvin Harrison Jr.", "pos": "WR", "tier": 3, "drb_score": 0.0, "archetype": "Rookie Upside", "adp": 22},
+
+    # Tier 4 - Mid-Round RBs (The Dead Zone / Bust Risks)
     {"name": "Rhamondre Stevenson", "pos": "RB", "tier": 4, "drb_score": 5.4, "archetype": "Bust Risk (Dead Zone)", "adp": 62},
     {"name": "D'Andre Swift", "pos": "RB", "tier": 4, "drb_score": 5.2, "archetype": "Bust Risk (Dead Zone)", "adp": 68},
     {"name": "Zamir White", "pos": "RB", "tier": 4, "drb_score": 4.9, "archetype": "Bust Risk (Dead Zone)", "adp": 75},
-    {"name": "Christian Kirk", "pos": "WR", "tier": 3, "drb_score": 0.0, "archetype": "PPR Value Target", "adp": 70},
-    {"name": "Rashee Rice", "pos": "WR", "tier": 3, "drb_score": 0.0, "archetype": "High-Upside Conversion", "adp": 55},
+    
+    # Mid-Round WR Value Targets
+    {"name": "Zay Flowers", "pos": "WR", "tier": 3, "drb_score": 0.0, "archetype": "PPR Value Target", "adp": 33},
+    {"name": "Rashee Rice", "pos": "WR", "tier": 3, "drb_score": 0.0, "archetype": "High-Upside Conversion", "adp": 35},
     {"name": "Chris Godwin", "pos": "WR", "tier": 3, "drb_score": 0.0, "archetype": "PPR Value Target", "adp": 64},
 ]
 
@@ -74,7 +84,7 @@ st.markdown("Powered by Dynamic Running Back (DRB) metrics, tier-based value mat
 st.sidebar.markdown("---")
 st.session_state.current_round = st.sidebar.slider("Current Draft Round", 1, 15, st.session_state.current_round)
 
-# Fetch and Parse Sleeper API Picks (Strictly filtering for active rostered players)
+# Fetch and Parse Sleeper API Picks (Filtering out unsigned/inactive players)
 sleeper_picked_names = []
 raw_picks = []
 if sleeper_draft_id:
@@ -85,8 +95,8 @@ if sleeper_draft_id:
         p_id = pick.get("player_id")
         if p_id and p_id in nfl_players:
             p_info = nfl_players[p_id]
-            # Ensure the player is actively signed to an NFL team roster
             player_team = p_info.get("team")
+            # Only count players actively signed to a team roster
             if player_team is not None and player_team != "":
                 full_name = f"{p_info.get('first_name', '')} {p_info.get('last_name', '')}".strip()
                 sleeper_picked_names.append(full_name)
@@ -109,9 +119,9 @@ with col1:
     st.subheader(f"Round {st.session_state.current_round} Recommendations")
     
     if 5 <= st.session_state.current_round <= 10:
-        st.warning("⚠️ **TFH Alert: Mid-Round RB Dead Zone Active.** Prioritize high-upside WR depth.")
+        st.warning("⚠️ **TFH Alert: Mid-Round RB Dead Zone Active.** Prioritize high-upside WR depth and avoid low-ceiling running backs.")
     else:
-        st.success("✅ **TFH Status:** Optimal draft window for elite ceilings.")
+        st.success("✅ **TFH Status:** Optimal draft window for elite ceilings and foundational target monsters.")
 
     if active_pool:
         df_pool = pd.DataFrame(active_pool)
@@ -133,7 +143,7 @@ with col2:
     st.subheader("TFH Strategy Matrix")
     st.markdown("""
     * **Elite Ceiling (Tier 1):** Priority targets in rounds 1–2.
-    * **Safe Volume Floor:** Reliable touch counts.
+    * **Safe Volume Floor:** Reliable baseline touch counts.
     * **Target Monster (WR):** High-target share week-winners.
     * **Bust Risk (Dead Zone):** RBs in rounds 5–10. **Avoid.**
     """)
