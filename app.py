@@ -9,11 +9,11 @@ st.set_page_config(
     layout="wide"
 )
 
-# Sidebar for Sleeper API Sync with your Draft ID pre-loaded
+# Sidebar for Sleeper API Sync
 st.sidebar.header("Live Draft Sync")
 sleeper_draft_id = st.sidebar.text_input("Sleeper Draft ID", value="1397302773686468608")
 
-# Function to fetch live picks from Sleeper API (refreshes cache every 5 seconds)
+# Function to fetch live picks from Sleeper API
 @st.cache_data(ttl=5)
 def fetch_sleeper_picks(draft_id):
     if not draft_id:
@@ -86,7 +86,7 @@ st.session_state.current_round = st.sidebar.slider("Current Draft Round", 1, 15,
 scoring_format = st.sidebar.selectbox("Scoring Format", ["Half-PPR", "Full PPR", "Standard"])
 league_type = st.sidebar.selectbox("League Type", ["Redraft", "Dynasty / Keeper"])
 
-# Fetch and Parse Sleeper API Picks
+# Fetch and Parse Sleeper API Picks with Active Status Filter
 sleeper_picked_names = []
 if sleeper_draft_id:
     live_picks = fetch_sleeper_picks(sleeper_draft_id)
@@ -96,11 +96,13 @@ if sleeper_draft_id:
         p_id = pick.get("player_id")
         if p_id and p_id in nfl_players:
             p_info = nfl_players[p_id]
-            full_name = f"{p_info.get('first_name', '')} {p_info.get('last_name', '')}".strip()
-            sleeper_picked_names.append(full_name)
-    st.sidebar.success(f"Synced {len(sleeper_picked_names)} picks from Sleeper!")
+            # Ensure the player is active or on a team to filter out legacy/retired players
+            if p_info.get("active") == True or p_info.get("team") is not None:
+                full_name = f"{p_info.get('first_name', '')} {p_info.get('last_name', '')}".strip()
+                sleeper_picked_names.append(full_name)
+    st.sidebar.success(f"Synced {len(sleeper_picked_names)} active picks from Sleeper!")
 
-# Filter available player pool by removing API-picked and manually picked players
+# Filter available player pool
 unavailable_players = set(st.session_state.manual_drafted + sleeper_picked_names)
 active_pool = [p for p in master_pool if p["name"] not in unavailable_players]
 
@@ -110,7 +112,6 @@ col1, col2 = st.columns([2, 1])
 with col1:
     st.subheader(f"Round {st.session_state.current_round} Recommendations")
     
-    # TFH Mid-Round Logic Alert
     if 5 <= st.session_state.current_round <= 10:
         st.warning(
             "⚠️ **TFH Alert: Mid-Round RB Dead Zone Active.** "
